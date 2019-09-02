@@ -84,3 +84,5 @@ class CassandraConan(ConanFile):
                 self.cpp_info.defines = ["CASS_STATIC"]
         elif self.settings.os == "Linux":
             self.cpp_info.libs.extend(["pthread", "rt"])
+            if self.settings.compiler == 'clang' and self.settings.arch == 'x86':
+                self.cpp_info.libs.extend(["atomic"])
