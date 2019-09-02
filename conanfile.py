@@ -19,13 +19,13 @@ class CassandraConan(ConanFile):
 
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = "shared=False", "fPIC=True"
+    default_options = {'shared': False, 'fPIC': True}
 
     _source_subfolder = "source_subfolder"
 
     requires = (
         "libuv/1.27.0@bincrafters/stable",
-        "OpenSSL/1.1.1d@conan/stable",
+        "OpenSSL/1.0.2s@conan/stable",
     )
 
     def config_options(self):
@@ -37,8 +37,8 @@ class CassandraConan(ConanFile):
 
     def source(self):
         source_url = " https://codeload.github.com/datastax/cpp-driver"
-        extracted_name = 'cpp-driver-%s' % self.version
-        tools.get("{0}/tar.gz/{1}".format(source_url, self.version), filename="%s.tar.gz" % extracted_name)
+        extracted_name = f"cpp-driver-{self.version}"
+        tools.get("{0}/tar.gz/{1}".format(source_url, self.version), filename=f"{extracted_name}.tar.gz")
         os.rename(extracted_name, self._source_subfolder)
 
     def _configure_cmake(self):
