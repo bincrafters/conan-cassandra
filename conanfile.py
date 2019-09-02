@@ -21,11 +21,11 @@ class CassandraConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = "shared=False", "fPIC=True"
 
-    source_subfolder = "source_subfolder"
+    _source_subfolder = "source_subfolder"
 
     requires = (
         "libuv/1.27.0@bincrafters/stable",
-        "OpenSSL/1.0.2o@conan/stable",
+        "OpenSSL/1.1.1d@conan/stable",
     )
 
     def config_options(self):
@@ -39,9 +39,9 @@ class CassandraConan(ConanFile):
         source_url = " https://codeload.github.com/datastax/cpp-driver"
         extracted_name = 'cpp-driver-%s' % self.version
         tools.get("{0}/tar.gz/{1}".format(source_url, self.version), filename="%s.tar.gz" % extracted_name)
-        os.rename(extracted_name, self.source_subfolder)
+        os.rename(extracted_name, self._source_subfolder)
 
-    def configure_cmake(self):
+    def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions['CASS_BUILD_STATIC'] = not self.options.shared
         cmake.definitions['CASS_USE_STATIC_LIBS'] = not self.options.shared
@@ -54,26 +54,24 @@ class CassandraConan(ConanFile):
                 libuv_library = os.path.join(self.deps_cpp_info["libuv"].rootpath, "lib", "libuv.dll.lib")
             cmake.definitions['LIBUV_LIBRARY'] = libuv_library
         cmake.definitions['OPENSSL_ROOT_DIR'] = self.deps_cpp_info["OpenSSL"].rootpath
-        if self.settings.os != 'Windows':
-            cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
         cmake.configure()
-        return cmake
+        self._cmake = cmake
 
     def build(self):
         if self.settings.os == 'Windows' and self.settings.compiler == 'gcc' and self.options.shared:
-            tools.replace_in_file(os.path.join(self.source_subfolder, "cmake", "modules", "CppDriver.cmake"),
+            tools.replace_in_file(os.path.join(self._source_subfolder, "cmake", "modules", "CppDriver.cmake"),
                                   "if(WIN32)\n      install",
                                   "if(WIN32 AND NOT MINGW)\n      install")
-            tools.replace_in_file(os.path.join(self.source_subfolder, "cmake", "modules", "CppDriver.cmake"),
+            tools.replace_in_file(os.path.join(self._source_subfolder, "cmake", "modules", "CppDriver.cmake"),
                                   'elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")',
                                   'elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")\n' +
                                   'set(CASS_LIBS ${CASS_LIBS} iphlpapi psapi wsock32 crypt32 ws2_32 userenv)')
-        cmake = self.configure_cmake()
-        cmake.build()
-        cmake.install()
+        self._configure_cmake()
+        self._cmake.build()
 
     def package(self):
-        self.copy(pattern="LICENSE.txt", dst="license", src=self.source_subfolder)
+        self.copy(pattern="LICENSE.txt", dst="license", src=self._source_subfolder)
+        self._cmake.install()
 
     def package_info(self):
         if self.options.shared:
