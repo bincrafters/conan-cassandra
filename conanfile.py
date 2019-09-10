@@ -6,12 +6,14 @@ import os
 
 
 class CassandraConan(ConanFile):
-    name = "cassandra"
+    name = "cassandra-driver"
     version = "2.13.0"
     description = "Cassandra C++ Driver"
+    topics = ("conan", "cassandra", "driver")
     url = "https://github.com/bincrafters/conan-cassandra"
     homepage = "https://github.com/datastax/cpp-driver"
-    license = "Apache"
+    author = "Bincrafters <bincrafters@gmail.com>"
+    license = "Apache-2.0"
 
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt"]
@@ -36,9 +38,10 @@ class CassandraConan(ConanFile):
         self.options["libuv"].shared = self.options.shared
 
     def source(self):
+        sha256 = "e06b623eee50d24ec04b8c7bde582dd406b731901bc0920ae581e70960c8681c"
         source_url = " https://codeload.github.com/datastax/cpp-driver"
         extracted_name = f"cpp-driver-{self.version}"
-        tools.get("{0}/tar.gz/{1}".format(source_url, self.version), filename=f"{extracted_name}.tar.gz")
+        tools.get("{0}/tar.gz/{1}".format(source_url, self.version), filename=f"{extracted_name}.tar.gz", sha256=sha256)
         os.rename(extracted_name, self._source_subfolder)
 
     def _configure_cmake(self):
