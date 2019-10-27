@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from conans import ConanFile, CMake, tools
 import os
 
@@ -27,7 +24,7 @@ class CassandraConan(ConanFile):
 
     requires = (
         "libuv/1.27.0@bincrafters/stable",
-        "OpenSSL/1.0.2s@conan/stable",
+        "openssl/1.0.2t",
     )
 
     def config_options(self):
@@ -57,7 +54,7 @@ class CassandraConan(ConanFile):
             else:
                 libuv_library = os.path.join(self.deps_cpp_info["libuv"].rootpath, "lib", "libuv.dll.lib")
             cmake.definitions['LIBUV_LIBRARY'] = libuv_library
-        cmake.definitions['OPENSSL_ROOT_DIR'] = self.deps_cpp_info["OpenSSL"].rootpath
+        cmake.definitions['OPENSSL_ROOT_DIR'] = self.deps_cpp_info["openssl"].rootpath
         cmake.configure()
         self._cmake = cmake
 
