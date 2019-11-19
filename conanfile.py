@@ -9,7 +9,6 @@ class CassandraConan(ConanFile):
     topics = ("conan", "cassandra", "driver")
     url = "https://github.com/bincrafters/conan-cassandra-driver"
     homepage = "https://github.com/datastax/cpp-driver"
-    author = "Bincrafters <bincrafters@gmail.com>"
     license = "Apache-2.0"
 
     exports = ["LICENSE.md"]
