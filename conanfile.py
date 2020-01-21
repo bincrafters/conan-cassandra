@@ -23,7 +23,7 @@ class CassandraConan(ConanFile):
 
     requires = (
         "libuv/1.27.0@bincrafters/stable",
-        "openssl/1.0.2t",
+        "openssl/1.0.2u",
     )
 
     def config_options(self):
