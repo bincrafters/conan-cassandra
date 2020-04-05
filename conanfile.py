@@ -11,7 +11,6 @@ class CassandraConan(ConanFile):
     homepage = "https://github.com/datastax/cpp-driver"
     license = "Apache-2.0"
 
-    exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt"]
     generators = "cmake"
 
@@ -22,7 +21,7 @@ class CassandraConan(ConanFile):
     _source_subfolder = "source_subfolder"
 
     requires = (
-        "libuv/1.27.0@bincrafters/stable",
+        "libuv/1.34.2",
         "openssl/1.0.2u",
     )
 
